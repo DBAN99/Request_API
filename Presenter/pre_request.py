@@ -10,14 +10,14 @@ close  = db_query.db_close
 def pre_post_doc(add):
 
     try:
-        result = db_query.db_newsdata_get()
+        db_query.db_post_docter(add)
+        commit()
 
     except:
         result = JSONResponse(status_code=400, content="URL ERROR")
 
     else:
-        if result == []:
-            result = JSONResponse(status_code=404, content="Data Not Found")
+        result = JSONResponse(status_code=200, content="OK")
 
     finally:
         session.close()

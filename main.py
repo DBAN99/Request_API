@@ -1,20 +1,16 @@
+from View import api_post
 from fastapi import FastAPI
+from Model import db_check
 
-import datetime
-app = FastAPI()
-import calendar
-
-
-def get_days(yyyy, mm, dd):
-    days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
-    return days[calendar.weekday(yyyy, mm, dd)]
-
-@app.get("/")
-async def root():
-    a = get_days(2022,1,16)
-    return a
+def include_router(app):
+    # app.include_router(api_get.router, prefix="/news")
+    app.include_router(api_post.router, prefix="/docter")
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+def start_application():
+    app = FastAPI()
+    include_router(app)
+    return app
+
+db_check.table_install()
+app = start_application()

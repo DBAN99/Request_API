@@ -8,7 +8,7 @@ class Docter(Base):
     id = Column(BigInteger,nullable=False, autoincrement=True, primary_key=True)
     docter_name = Column(VARCHAR(30) ,nullable=False)
     hospital_name = Column(VARCHAR(50), nullable=False)
-    department = Column(TEXT, nullable=False, unique=True)
+    department = Column(TEXT, nullable=False)
     nonpaid = Column(TEXT, nullable=True)
     day_start_time = Column(INT, nullable=True)
     day_end_time = Column(INT, nullable=True)
