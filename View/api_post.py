@@ -11,14 +11,10 @@ class AddDocter(BaseModel):
     hospital_name: str
     department : str
     nonpaid : str
-    day_start : int
-    day_end : int
-    rest_start : int
-    rest_end : int
-    sat_start : int
-    sat_end : int
-    sun_start : int
-    sun_end : int
+    day_work_time : str
+    day_rest_time: str
+    sat_work_time: str
+    sun_work_time: str
     holiday : str
     workday : str
 
