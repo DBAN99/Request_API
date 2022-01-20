@@ -8,13 +8,6 @@ engine = db_connection.engineconn()
 session = engine.sessionmaker()
 docter = db_class.Docter
 
-# sql = text("SELECT * FROM news_link WHERE MATCH(link,name,test) AGAINST('일반 메라키');")
-# result = session.execute(sql)
-#
-# asd = result.fetchall()
-#
-# print(asd)
-
 # COMMIT
 def db_commit():
     return session.commit()
@@ -32,4 +25,10 @@ def db_post_docter(add):
     result = session.add(add_docter)
     return result
 
+def db_get_docter():
+    sql = text("SELECT * FROM docter WHERE MATCH(docter_name, hospital_name,department) AGAINST('string');")
+    result = session.execute(sql)
+    # sql1 = text("ALTER TABLE docter ADD FULLTEXT(docter_name, hospital_name,department);")
+    # result = session.execute(sql1)
+    return result
 

@@ -21,7 +21,6 @@ class Docter(Base):
     holiday = Column(VARCHAR(10), nullable=True)
     work_day = Column(VARCHAR(255), nullable=True)
 
-
 class Patient(Base):
     __tablename__ = 'patient'
     id = Column(BigInteger,nullable=False, autoincrement=True, primary_key=True)

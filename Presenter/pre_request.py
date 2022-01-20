@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 engine = db_connection.engineconn()
 session = engine.sessionmaker()
 commit = db_query.db_commit
-close  = db_query.db_close
+close = db_query.db_close
 
 def pre_post_doc(add):
 
@@ -20,6 +20,31 @@ def pre_post_doc(add):
         result = JSONResponse(status_code=200, content="OK")
 
     finally:
-        session.close()
+        close()
+
+    return result
+
+def pre_get_doc():
+
+    try:
+        search = db_query.db_get_docter()
+
+    except:
+        result = JSONResponse(status_code=400, content="URL ERROR")
+
+    else:
+        data = search.fetchall()
+
+        if data == {}:
+            result = JSONResponse(status_code=404, content="Data Not Found")
+
+        else:
+            result = []
+            for i in range(len(data)):
+                result.append(data[i]['docter_name'])
+
+    finally:
+        close()
+
 
     return result

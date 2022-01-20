@@ -1,16 +1,17 @@
-
-from pydantic import BaseModel
 from fastapi import APIRouter
+from Presenter import pre_request
 
 router = APIRouter()
 
-@router.get('/search', tags=["search"])
-async def post_string():
-
-    return
-
-
 # 의사 검색 (문자열)
+@router.get('/find', tags=["search"])
+async def get_string():
+    result = pre_request.pre_get_doc()
+
+    return result
+
+
+
 
 # 의사 검색 (날짜, 시간)
 
