@@ -15,22 +15,6 @@ def day_change_name(date):
     day = dateDict[datetime_date.weekday()]
     return day
 
-def pre_post_doc(add):
-
-    try:
-        db_query.db_post_docter(add)
-        commit()
-
-    except:
-        result = JSONResponse(status_code=400, content="URL ERROR")
-
-    else:
-        result = JSONResponse(status_code=200, content="OK")
-
-    finally:
-        close()
-
-    return result
 
 def pre_get_doc(string):
 
@@ -61,40 +45,83 @@ def pre_get_doc_date(date,hour):
 
     try:
         day = day_change_name(date)
-        search = db_query.db_get_docter_date(day,hour)
+        result = db_query.db_get_docter_date(day,hour)
 
     except:
         result = JSONResponse(status_code=400, content="URL ERROR")
 
     else:
-        data = search.fetchall()
-
-        if data == []:
+        if result == {}:
             result = JSONResponse(status_code=404, content="Data Not Found")
-
-        else:
-            result = []
-            for i in range(len(data)):
-                result.append(data[i]['docter_name'])
 
     finally:
         close()
 
-
     return result
 
-
-def qwe():
+def pre_post_patient(add):
 
     try:
-        db_query.qwe()
-
+        db_query.db_post_patient(add)
+        commit()
 
     except:
         result = JSONResponse(status_code=400, content="URL ERROR")
 
     else:
         result = JSONResponse(status_code=200, content="OK")
+
+    finally:
+        close()
+
+    return result
+
+def pre_post_doc(add):
+
+    try:
+        db_query.db_post_docter(add)
+        commit()
+
+    except:
+        result = JSONResponse(status_code=400, content="URL ERROR")
+
+    else:
+        result = JSONResponse(status_code=200, content="OK")
+
+    finally:
+        close()
+
+    return result
+
+def pre_post_request(add):
+
+    try:
+        data = {
+            "patient_name" : "",
+            "docter_name" : "",
+            "request_date" : "",
+            "request_time" : "",
+            "request_now_datetime" : ""
+        }
+        nowdate = {"request_now_datetime" : datetime.now()}
+        doc_name = db_query.docter_id_name(add.docter_id)
+
+        day = day_change_name(add.date)
+        docter_name = db_query.db_post_request(add, day,doc_name)
+
+        data["patient_name"] = db_query.patient_id_name(add.patient_id)
+
+    except:
+        result = JSONResponse(status_code=400, content="URL ERROR")
+
+    else:
+        if docter_name == {}:
+            result = JSONResponse(status_code=404, content="Data Not Found")
+        elif docter_name != {}:
+            data["docter_name"] = docter_name
+            data["request_date"] = add.date
+            data["request_time"] = add.time
+            data["request_now_datetime"] = nowdate
 
     finally:
         close()
