@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, VARCHAR, INT, TEXT, TIME
+from sqlalchemy import Column, BigInteger, VARCHAR, TEXT, TIME,BOOLEAN, DATE
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -29,7 +29,11 @@ class Patient(Base):
 class Request(Base):
     __tablename__ = 'request'
     request_id = Column(BigInteger,nullable=False, autoincrement=True, primary_key=True)
-    patient_id = Column(BigInteger)
-    docter_id = Column(BigInteger)
-    request_hope_time = Column(INT)
-    request_end_time = Column(VARCHAR(20))
+    patient_name = Column(VARCHAR(30))
+    docter_name = Column(VARCHAR(30))
+    request_date = Column(VARCHAR(20))
+    request_time = Column(TIME)
+    request_now_datetime = Column(VARCHAR(20))
+    request_apply = Column(BOOLEAN, default= 0)
+    expired_date = Column(DATE)
+    expired_time = Column(TIME)

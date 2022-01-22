@@ -7,6 +7,7 @@ engine = db_connection.engineconn()
 session = engine.sessionmaker()
 docter = db_class.Docter
 patient = db_class.Patient
+request = db_class.Request
 
 
 
@@ -18,6 +19,7 @@ def db_commit():
 def db_close():
     return session.close()
 
+# -------------- POST -----------------
 def db_post_docter(add):
     add_docter = docter(docter_name = add.docter_name, hospital_name = add.hospital_name, department = add.department,
                         nonpaid= add.nonpaid, holiday = add.holiday, work_day = add.workday,
@@ -33,6 +35,26 @@ def db_post_docter(add):
 def db_post_patient(add):
     add_patient = patient(patient_name= add.patient_name)
     result = session.add(add_patient)
+    return result
+
+def db_post_request(time,day,doc_name):
+    if day == '토요일':
+        result = session.query(docter.docter_name).filter(docter.docter_name == doc_name,docter.sat_start_time <= time, docter.sat_end_time >= time).first()
+
+    elif day == '일요일':
+        result = session.query(docter.docter_name).filter(docter.docter_name == doc_name,docter.sun_start_time <= time, docter.sun_end_time >= time).first()
+
+    else:
+        result = session.query(docter.docter_name).filter(docter.docter_name == doc_name ,docter.day_start_time <= time, docter.day_end_time >= time).first()
+
+    return result
+
+# -------------- GET -----------------
+def db_get_docter_time(name):
+    result = session.query(docter.day_start_time,docter.day_end_time, docter.day_start_rest,
+                           docter.day_end_rest,docter.sat_start_time,docter.sat_end_time,
+                           docter.sun_start_time, docter.sun_end_time).filter(docter.docter_name == name).first()
+
     return result
 
 def db_get_docter(string):
@@ -52,16 +74,28 @@ def db_get_docter_date(date,hour):
         result = session.query(docter.docter_name).filter(docter.day_start_time <= hour, docter.day_end_time >= hour).all()
     return result
 
-def db_post_request(add,day,doc_name):
-    if day == '토요일':
-        result = session.query(docter.docter_name).filter(docter.docter_name == doc_name,docter.sat_start_time <= add.time, docter.sat_end_time >= add.time).first()
+def db_get_request_doc(name):
+    result = session.query(request.request_id,request.patient_name,request.request_date,request.request_time).filter(request.docter_name == name , request.request_apply == 0).all()
 
-    elif day == '일요일':
-        result = session.query(docter.docter_name).filter(docter.docter_name == doc_name,docter.sun_start_time <= add.time, docter.sun_end_time >= add.time).first()
+    return result
 
-    else:
-        result = session.query(docter.docter_name).filter(docter.docter_name == doc_name ,docter.day_start_time <= add.time, docter.day_end_time >= add.time).first()
+# -------------- ANOTHER -----------------
 
+
+
+
+def db_add_data(data):
+    add = request(patient_name= data["patient_name"],docter_name=data["docter_name"],
+                     request_date= data["request_date"], request_time= data["request_time"] ,
+                     request_now_datetime=data["request_now_datetime"])
+    result = session.add(add)
+
+    return result
+
+def db_request_select(patient_name, docter_name,now_time):
+    result = session.query(request.request_id,request.patient_name,
+                           request.docter_name,request.request_date,request.request_time).filter(request.patient_name == patient_name, request.docter_name == docter_name,request.request_now_datetime == now_time).all()
+    print(now_time)
     return result
 
 def docter_id_name(id):
