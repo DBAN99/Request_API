@@ -3,7 +3,7 @@ from datetime import time
 from pydantic import BaseModel
 from fastapi import APIRouter
 
-from Presenter import pre_request
+from Presenter import pre_request_post
 
 router = APIRouter()
 
@@ -30,22 +30,29 @@ class AddRequest(BaseModel):
     patient_id : int
     docter_id : int
     date: str
-    time : str
+    time : time
 
-@router.post('/docter', tags=["add"])
+
+
+
+# 의사 추가
+@router.post('/docter', tags=["Add"])
 async def add_post_docter(add : AddDocter):
-    result = pre_request.pre_post_doc(add)
+    result = pre_request_post.pre_post_doc(add)
 
     return result
 
-@router.post('/patient', tags=["add"])
+# 환자 추가
+@router.post('/patient', tags=["Add"])
 async def add_post_patient(add : AddPatient):
-    result = pre_request.pre_post_patient(add)
+    result = pre_request_post.pre_post_patient(add)
 
     return result
 
-@router.post('/request', tags=["add"])
+#진료 요청
+@router.post('/request', tags=["Add"])
 async def add_post_request(add : AddRequest):
-    result = pre_request.pre_post_request(add)
+    result = pre_request_post.pre_post_request(add)
 
     return result
+

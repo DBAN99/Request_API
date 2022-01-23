@@ -49,13 +49,9 @@ def db_post_request(time,day,doc_name):
 
     return result
 
-# -------------- GET -----------------
-def db_get_docter_time(name):
-    result = session.query(docter.day_start_time,docter.day_end_time, docter.day_start_rest,
-                           docter.day_end_rest,docter.sat_start_time,docter.sat_end_time,
-                           docter.sun_start_time, docter.sun_end_time).filter(docter.docter_name == name).first()
 
-    return result
+
+# -------------- GET -----------------
 
 def db_get_docter(string):
     sql = text("SELECT * FROM docter WHERE MATCH(docter_name, hospital_name,department) AGAINST('{}');".format(string))
@@ -79,23 +75,35 @@ def db_get_request_doc(name):
 
     return result
 
+def db_get_request_apply(id):
+    result = session.query(request.request_id,request.patient_name,
+                           request.request_date,request.request_time,
+                           request.expired_date,request.expired_time).filter(request.request_id == id).all()
+    return result
+
+# ----------------- PATCH ------------------
+
+def db_patch_apply(id):
+    result = session.query(request).filter(request.request_id == id).update({'request_apply': 1})
+
+    return result
+
+
 # -------------- ANOTHER -----------------
-
-
-
 
 def db_add_data(data):
     add = request(patient_name= data["patient_name"],docter_name=data["docter_name"],
                      request_date= data["request_date"], request_time= data["request_time"] ,
-                     request_now_datetime=data["request_now_datetime"])
+                     request_now_datetime=data["request_now_datetime"],
+                  expired_date=data["expired_date"], expired_time=data["expired_time"])
     result = session.add(add)
 
     return result
 
 def db_request_select(patient_name, docter_name,now_time):
     result = session.query(request.request_id,request.patient_name,
-                           request.docter_name,request.request_date,request.request_time).filter(request.patient_name == patient_name, request.docter_name == docter_name,request.request_now_datetime == now_time).all()
-    print(now_time)
+                           request.docter_name,request.request_date,request.request_time,
+                           request.expired_time,request.expired_date).filter(request.patient_name == patient_name, request.docter_name == docter_name,request.request_now_datetime == now_time).all()
     return result
 
 def docter_id_name(id):
@@ -107,3 +115,4 @@ def patient_id_name(id):
     result = session.query(patient.patient_name).filter(patient.patient_id == id).first()
 
     return result
+
